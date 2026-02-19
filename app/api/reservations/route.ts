@@ -18,6 +18,7 @@ export async function GET(request: Request) {
     const computerId = searchParams.get("computerId");
     const status = searchParams.get("status");
     const all = searchParams.get("all") === "true";
+    const upcoming = searchParams.get("upcoming") === "true";
 
     // Get user profile to check role
     const { data: profile } = await supabase
@@ -33,11 +34,20 @@ export async function GET(request: Request) {
         computer:computers(*),
         user:profiles(id, name, email)
       `)
-      .order("start_time", { ascending: false });
+      .order("start_time", { ascending: true });
 
-    // Non-admin users can only see their own reservations
-    if (!all || profile?.role !== "admin") {
-      query = query.eq("user_id", user.id);
+    // For upcoming reservations - show all future bookings (public schedule)
+    if (upcoming) {
+      const now = new Date().toISOString();
+      query = query
+        .gte("end_time", now)
+        .in("status", ["pending", "active"]);
+    } else {
+      // Non-admin users can only see their own reservations
+      if (!all || profile?.role !== "admin") {
+        query = query.eq("user_id", user.id);
+      }
+      query = query.order("start_time", { ascending: false });
     }
 
     if (computerId) {
@@ -52,7 +62,36 @@ export async function GET(request: Request) {
 
     if (error) throw error;
 
-    return NextResponse.json({ reservations: reservations ?? [] });
+    const now = new Date();
+
+    // Update statuses and return corrected data
+    const updatedReservations = await Promise.all(
+      (reservations ?? []).map(async (reservation) => {
+        const startTime = new Date(reservation.start_time);
+        const endTime = new Date(reservation.end_time);
+        
+        let correctStatus = reservation.status;
+        
+        // Determine correct status based on current time
+        if (reservation.status === "pending" && startTime <= now && endTime > now) {
+          correctStatus = "active";
+        } else if ((reservation.status === "active" || reservation.status === "pending") && endTime <= now) {
+          correctStatus = "completed";
+        }
+        
+        // Update in database if status changed
+        if (correctStatus !== reservation.status) {
+          await supabase
+            .from("reservations")
+            .update({ status: correctStatus })
+            .eq("id", reservation.id);
+        }
+        
+        return { ...reservation, status: correctStatus };
+      })
+    );
+
+    return NextResponse.json({ reservations: updatedReservations });
   } catch (error) {
     console.error("Error fetching reservations:", error);
     return NextResponse.json(
@@ -138,25 +177,6 @@ export async function POST(request: Request) {
           },
         },
         { status: 409 }
-      );
-    }
-
-    // Check if user already has an active reservation
-    const now = new Date().toISOString();
-    const { data: userActiveReservation } = await supabase
-      .from("reservations")
-      .select("*")
-      .eq("user_id", user.id)
-      .in("status", ["pending", "active"])
-      .gte("end_time", now)
-      .limit(1);
-
-    if (userActiveReservation && userActiveReservation.length > 0) {
-      return NextResponse.json(
-        {
-          error: "You already have an active or pending reservation. Please complete or cancel it first.",
-        },
-        { status: 400 }
       );
     }
 

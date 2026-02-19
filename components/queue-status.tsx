@@ -58,6 +58,43 @@ export function QueueStatus({
     (c) => !c.isOccupied && c.status !== "maintenance"
   ).length;
 
+  // Calculate estimated wait time based on when computers will be free
+  const getEstimatedWaitTime = () => {
+    if (!position) return null;
+    
+    const occupiedComputers = computers
+      .filter((c) => c.isOccupied && c.nextAvailableAt && c.status !== "maintenance")
+      .map((c) => new Date(c.nextAvailableAt!).getTime())
+      .sort((a, b) => a - b);
+
+    if (occupiedComputers.length === 0) return "Soon";
+
+    // Get the Nth computer that will be free (based on queue position)
+    const targetIndex = Math.min(position.position - 1, occupiedComputers.length - 1);
+    const targetTime = occupiedComputers[targetIndex];
+    const now = Date.now();
+    const waitMinutes = Math.max(0, Math.round((targetTime - now) / 60000));
+
+    if (waitMinutes < 1) return "< 1 min";
+    if (waitMinutes < 60) return `~${waitMinutes} min`;
+    const hours = Math.floor(waitMinutes / 60);
+    const mins = waitMinutes % 60;
+    return `~${hours}h ${mins}m`;
+  };
+
+  // Get next available time for display
+  const getNextFreeTime = () => {
+    const nextFree = computers
+      .filter((c) => c.isOccupied && c.nextAvailableAt && c.status !== "maintenance")
+      .map((c) => ({ name: c.name, time: new Date(c.nextAvailableAt!) }))
+      .sort((a, b) => a.time.getTime() - b.time.getTime())[0];
+
+    if (!nextFree) return null;
+    return nextFree;
+  };
+
+  const nextFree = getNextFreeTime();
+
   if (!position) {
     return (
       <Card>
@@ -80,9 +117,20 @@ export function QueueStatus({
               Computers are available! You can book one directly.
             </p>
           ) : (
-            <Button onClick={handleJoin} disabled={isLoading} className="w-full">
-              {isLoading ? "Joining..." : "Join Queue"}
-            </Button>
+            <>
+              {nextFree && (
+                <p className="text-sm text-muted-foreground">
+                  Next available: <strong>{nextFree.name}</strong> at{" "}
+                  {nextFree.time.toLocaleTimeString("id-ID", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              )}
+              <Button onClick={handleJoin} disabled={isLoading} className="w-full">
+                {isLoading ? "Joining..." : "Join Queue"}
+              </Button>
+            </>
           )}
         </CardContent>
       </Card>
@@ -129,6 +177,26 @@ export function QueueStatus({
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Estimated wait:</span>
               <span>{position.estimatedWaitTime} minutes</span>
+            </div>
+          )}
+
+          {!position.estimatedWaitTime && getEstimatedWaitTime() && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Estimated wait:</span>
+              <span>{getEstimatedWaitTime()}</span>
+            </div>
+          )}
+
+          {nextFree && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Next free:</span>
+              <span>
+                {nextFree.name} at{" "}
+                {nextFree.time.toLocaleTimeString("id-ID", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
           )}
         </div>

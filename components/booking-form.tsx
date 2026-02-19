@@ -85,8 +85,22 @@ export function BookingForm({ computers, selectedComputerId }: BookingFormProps)
         throw new Error(data.error || "Failed to create reservation");
       }
 
-      toast.success("Reservation created successfully!");
-      router.push("/dashboard/my-session");
+      toast.success("Reservation created! You can book another or view your sessions.", {
+        action: {
+          label: "View Sessions",
+          onClick: () => router.push("/dashboard/my-session"),
+        },
+      });
+      
+      // Reset form for another booking
+      setFormData({
+        computerId: "",
+        notes: "",
+        startDate: "",
+        startTime: "",
+        endDate: "",
+        endTime: "",
+      });
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create reservation");
@@ -95,14 +109,50 @@ export function BookingForm({ computers, selectedComputerId }: BookingFormProps)
     }
   };
 
+  const availableNow = availableComputers.filter(c => !c.isOccupied);
+  const occupiedComputers = availableComputers.filter(c => c.isOccupied && c.nextAvailableAt);
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Book a Computer</CardTitle>
-        <CardDescription>
-          Reserve a computer for your training session. You can book for any duration.
-        </CardDescription>
-      </CardHeader>
+    <>
+      {/* Availability Summary */}
+      <Card className="mb-4">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Computer Availability</CardTitle>
+          <CardDescription>
+            {availableNow.length} available now, {occupiedComputers.length} occupied
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {availableNow.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {availableNow.map((c) => (
+                  <span key={c.id} className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    {c.name} - Available
+                  </span>
+                ))}
+              </div>
+            )}
+            {occupiedComputers.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {occupiedComputers.map((c) => (
+                  <span key={c.id} className="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+                    {c.name} - Free at {format(new Date(c.nextAvailableAt!), "MMM d, HH:mm")}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Book a Computer</CardTitle>
+          <CardDescription>
+            Reserve a computer for your training session. You can book for any duration.
+          </CardDescription>
+        </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -121,9 +171,15 @@ export function BookingForm({ computers, selectedComputerId }: BookingFormProps)
                   <SelectItem key={computer.id} value={computer.id}>
                     <div className="flex items-center gap-2">
                       <span>{computer.name}</span>
-                      {computer.isOccupied && (
+                      {computer.isOccupied ? (
                         <span className="text-xs text-muted-foreground">
-                          (Currently occupied)
+                          (Free at {computer.nextAvailableAt 
+                            ? format(new Date(computer.nextAvailableAt), "MMM d, HH:mm")
+                            : "unknown"})
+                        </span>
+                      ) : (
+                        <span className="text-xs text-green-600">
+                          (Available now)
                         </span>
                       )}
                     </div>
@@ -207,5 +263,6 @@ export function BookingForm({ computers, selectedComputerId }: BookingFormProps)
         </form>
       </CardContent>
     </Card>
+    </>
   );
 }

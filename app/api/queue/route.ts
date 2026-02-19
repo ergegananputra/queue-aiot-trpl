@@ -19,7 +19,7 @@ export async function GET() {
       .from("queue")
       .select(`
         *,
-        user:profiles(id, name),
+        user:profiles(id, name, email),
         computer:computers(*)
       `)
       .eq("status", "waiting")

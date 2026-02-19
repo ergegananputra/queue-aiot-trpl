@@ -39,7 +39,7 @@ export function Navbar({ notificationCount = 0 }: NavbarProps) {
   const navItems = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/dashboard/book", label: "Book" },
-    { href: "/dashboard/queue", label: "Queue" },
+    { href: "/dashboard/queue", label: "Schedule" },
     { href: "/dashboard/my-session", label: "My Session" },
   ];
 
@@ -48,7 +48,7 @@ export function Navbar({ notificationCount = 0 }: NavbarProps) {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="font-bold text-lg">
-            Lab Queue
+            AIoT Lab Queue
           </Link>
           <div className="hidden md:flex items-center gap-4">
             {navItems.map((item) => (

@@ -25,8 +25,9 @@ import type { ReservationWithRelations } from "@/types";
 
 export default function MySessionPage() {
   const router = useRouter();
-  const [activeReservation, setActiveReservation] =
-    useState<ReservationWithRelations | null>(null);
+  const [activeReservations, setActiveReservations] = useState<
+    ReservationWithRelations[]
+  >([]);
   const [pastReservations, setPastReservations] = useState<
     ReservationWithRelations[]
   >([]);
@@ -40,14 +41,14 @@ export default function MySessionPage() {
         const reservations = data.reservations as ReservationWithRelations[];
 
         // Separate active/pending from past
-        const active = reservations.find(
+        const active = reservations.filter(
           (r) => r.status === "active" || r.status === "pending"
         );
         const past = reservations.filter(
           (r) => r.status !== "active" && r.status !== "pending"
         );
 
-        setActiveReservation(active || null);
+        setActiveReservations(active);
         setPastReservations(past);
       }
     } catch (error) {
@@ -100,9 +101,24 @@ export default function MySessionPage() {
         </Button>
       </div>
 
-      {/* Active Session */}
-      <div className="max-w-xl">
-        <ActiveSession reservation={activeReservation} />
+      {/* Active Sessions */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">
+          Active Reservations ({activeReservations.length})
+        </h2>
+        {activeReservations.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              No active reservations. Book a computer to get started!
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {activeReservations.map((reservation) => (
+              <ActiveSession key={reservation.id} reservation={reservation} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Past Reservations */}
