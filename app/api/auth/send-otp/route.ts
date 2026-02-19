@@ -73,11 +73,15 @@ export async function POST(request: Request) {
     
     const normalizedEmail = email.toLowerCase().trim();
     
-    // Server-side email domain validation
-    const allowedDomain = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "mail.ugm.ac.id";
-    if (!normalizedEmail.endsWith(`@${allowedDomain}`)) {
+    // Server-side email domain validation (supports multiple domains, comma-separated)
+    const allowedDomainsEnv = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "mail.ugm.ac.id";
+    const allowedDomains = allowedDomainsEnv.split(",").map((d) => d.trim().toLowerCase());
+    const emailDomain = normalizedEmail.split("@")[1];
+    
+    if (!emailDomain || !allowedDomains.includes(emailDomain)) {
+      const domainList = allowedDomains.map((d) => `@${d}`).join(", ");
       return NextResponse.json(
-        { error: `Only @${allowedDomain} emails are allowed` },
+        { error: `Only ${domainList} emails are allowed` },
         { status: 403 }
       );
     }
