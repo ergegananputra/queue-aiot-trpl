@@ -19,7 +19,7 @@ export default function VerifyRequestPage() {
         <CardContent className="text-center space-y-4">
           <div className="text-6xl">📧</div>
           <p className="text-muted-foreground">
-            Click the link in the email to sign in to the Lab Queue System.
+            Click the link in the email to sign in to the TRPL AIoT Lab Queue System.
             The link will expire in 24 hours.
           </p>
           <p className="text-sm text-muted-foreground">

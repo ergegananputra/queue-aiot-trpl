@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lab Queue System",
+  title: "TRPL AIoT Lab Queue System",
   description: "Computer lab booking and queue management system",
 };
 

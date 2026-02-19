@@ -1,4 +1,4 @@
-# Lab Queue System
+# TRPL AIoT Lab Queue System
 
 A computer lab booking and queue management system built with Next.js 16, Supabase, and shadcn/ui.
 

@@ -66,7 +66,7 @@ export default function SignInPage() {
           <CardContent className="text-center space-y-4">
             <div className="text-6xl">📧</div>
             <p className="text-muted-foreground">
-              Click the link in the email to sign in to the Lab Queue System.
+              Click the link in the email to sign in to the TRPL AIoT Lab Queue System.
             </p>
             <Button variant="outline" onClick={() => setSuccess(false)}>
               Use a different email
@@ -81,7 +81,7 @@ export default function SignInPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Lab Queue System</CardTitle>
+          <CardTitle className="text-2xl">TRPL AIoT Lab Queue System</CardTitle>
           <CardDescription>
             Sign in with your UGM email to access the computer lab booking system
           </CardDescription>

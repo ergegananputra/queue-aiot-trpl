@@ -24,7 +24,7 @@ export default async function HomePage() {
       {/* Hero Section */}
       <header className="border-b">
         <div className="container flex h-16 items-center justify-between">
-          <span className="font-bold text-lg">Lab Queue System</span>
+          <span className="font-bold text-lg">TRPL AIoT Lab Queue System</span>
           <Button asChild>
             <Link href="/auth/signin">Sign In</Link>
           </Button>
@@ -34,7 +34,7 @@ export default async function HomePage() {
       <main className="flex-1">
         <section className="container py-24 text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Computer Lab
+            AIoT Computer Lab
             <br />
             <span className="text-primary">Booking System</span>
           </h1>
@@ -105,7 +105,7 @@ export default async function HomePage() {
 
       <footer className="border-t py-6">
         <div className="container text-center text-sm text-muted-foreground">
-          Lab Queue System — UGM TRPL
+          TRPL AIoT Lab Queue System — UGM TRPL
         </div>
       </footer>
     </div>
