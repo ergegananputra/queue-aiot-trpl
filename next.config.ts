@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Server external packages for SQLite
+  serverExternalPackages: ["better-sqlite3"],
 };
 
 export default nextConfig;
