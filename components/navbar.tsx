@@ -6,6 +6,14 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
 interface NavbarProps {
@@ -14,6 +22,7 @@ interface NavbarProps {
 
 export function Navbar({ notificationCount = 0 }: NavbarProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -32,6 +41,7 @@ export function Navbar({ notificationCount = 0 }: NavbarProps) {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    setMobileMenuOpen(false);
     router.push("/");
     router.refresh();
   };
@@ -47,9 +57,57 @@ export function Navbar({ notificationCount = 0 }: NavbarProps) {
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
+          {/* Mobile Menu */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72">
+              <SheetHeader>
+                <SheetTitle>AIoT Lab Queue</SheetTitle>
+              </SheetHeader>
+              <div className="flex flex-col gap-4 mt-6">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`text-lg py-2 px-3 rounded-md transition-colors ${
+                      pathname === item.href
+                        ? "bg-primary/10 text-foreground font-medium"
+                        : "text-foreground/60 hover:bg-muted"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <hr className="my-2" />
+                {user && (
+                  <div className="space-y-3 px-3">
+                    <p className="text-sm text-muted-foreground break-all">
+                      {user.email}
+                    </p>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleSignOut}
+                    >
+                      Sign Out
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+
           <Link href="/dashboard" className="font-bold text-lg">
             AIoT Lab Queue
           </Link>
+          
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">
             {navItems.map((item) => (
               <Link
@@ -75,8 +133,8 @@ export function Navbar({ notificationCount = 0 }: NavbarProps) {
           )}
           
           {user && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground hidden sm:block">
+            <div className="hidden md:flex items-center gap-3">
+              <span className="text-sm text-muted-foreground">
                 {user.email}
               </span>
               <Button

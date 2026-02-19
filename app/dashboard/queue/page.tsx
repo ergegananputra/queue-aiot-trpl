@@ -210,7 +210,7 @@ export default function QueuePage() {
                 <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
                   <div className="text-xs text-muted-foreground mb-1">Next booking:</div>
                   <div className="font-medium text-sm">
-                    {nextReservation.user?.name || "Anonymous"}
+                    {nextReservation.user?.email || "Anonymous"}
                   </div>
                   <div className="text-xs">
                     {formatDateTime(nextReservation.start_time)} - {formatDateTime(nextReservation.end_time)}
@@ -232,7 +232,7 @@ export default function QueuePage() {
                   <div className="mt-2 space-y-2">
                     {reservations.slice(1).map((res) => (
                       <div key={res.id} className="text-xs p-2 rounded bg-muted">
-                        <div className="font-medium">{res.user?.name || "Anonymous"}</div>
+                        <div className="font-medium">{res.user?.email || "Anonymous"}</div>
                         <div className="text-muted-foreground">
                           {formatDateTime(res.start_time)} - {formatDateTime(res.end_time)}
                         </div>
@@ -292,13 +292,10 @@ export default function QueuePage() {
                       <TableCell>
                         <div className="text-sm">
                           <div className="flex items-center gap-2">
-                            {reservation.user?.name || "Anonymous"}
+                            {reservation.user?.email || "Anonymous"}
                             {reservation.user_id === user?.id && (
                               <Badge variant="outline">You</Badge>
                             )}
-                          </div>
-                          <div className="text-muted-foreground text-xs">
-                            {reservation.user?.email}
                           </div>
                         </div>
                       </TableCell>

@@ -1,6 +1,5 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,15 +17,17 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [retryAfter, setRetryAfter] = useState(0);
 
   const allowedDomain = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "mail.ugm.ac.id";
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess(false);
+    setRetryAfter(0);
 
+    // Keep client-side check for UX, but server validates too
     if (!email.endsWith(`@${allowedDomain}`)) {
       setError(`Only @${allowedDomain} emails are allowed`);
       return;
@@ -34,15 +35,19 @@ export default function SignInPage() {
 
     setIsLoading(true);
     try {
-      const { error: signInError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
+      const response = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-      if (signInError) {
-        setError(signInError.message);
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 429 && data.retryAfter) {
+          setRetryAfter(data.retryAfter);
+        }
+        setError(data.error || "Failed to send magic link");
       } else {
         setSuccess(true);
       }
@@ -102,7 +107,14 @@ export default function SignInPage() {
             </div>
 
             {error && (
-              <p className="text-sm text-destructive">{error}</p>
+              <div className="space-y-1">
+                <p className="text-sm text-destructive">{error}</p>
+                {retryAfter > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Rate limit: {retryAfter}s remaining
+                  </p>
+                )}
+              </div>
             )}
 
             <Button type="submit" className="w-full" disabled={isLoading}>
