@@ -19,7 +19,14 @@ export default function SignInPage() {
   const [success, setSuccess] = useState(false);
   const [retryAfter, setRetryAfter] = useState(0);
 
-  const allowedDomain = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "mail.ugm.ac.id";
+  const allowedDomainsEnv = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "mail.ugm.ac.id";
+  const allowedDomains = allowedDomainsEnv.split(",").map((d) => d.trim().toLowerCase());
+  const primaryDomain = allowedDomains[0];
+
+  const isEmailDomainAllowed = (email: string) => {
+    const emailDomain = email.toLowerCase().split("@")[1];
+    return emailDomain && allowedDomains.includes(emailDomain);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,8 +35,9 @@ export default function SignInPage() {
     setRetryAfter(0);
 
     // Keep client-side check for UX, but server validates too
-    if (!email.endsWith(`@${allowedDomain}`)) {
-      setError(`Only @${allowedDomain} emails are allowed`);
+    if (!isEmailDomainAllowed(email)) {
+      const domainList = allowedDomains.map((d) => `@${d}`).join(", ");
+      setError(`Only ${domainList} emails are allowed`);
       return;
     }
 
@@ -98,7 +106,7 @@ export default function SignInPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder={`yourname@${allowedDomain}`}
+                placeholder={`yourname@${primaryDomain}`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
