@@ -29,9 +29,8 @@ export default async function ComputerPage(props: ComputerPageProps) {
   return (
     <main className="max-w-2xl mx-auto py-8 px-4">
 
-      {/* Info booking: card kecil dengan icon dan button */}
-      <Link href="/dashboard/book" className="block mb-8 group" tabIndex={-1} style={{ textDecoration: 'none' }}>
-        <Card className="border-blue-300 bg-blue-50 dark:bg-blue-950/30 transition-shadow group-hover:shadow-lg group-active:shadow-md cursor-pointer">
+      {/* Info booking: card kecil dengan icon dan button*/}
+      <Card className="border-blue-300 mb-4 bg-blue-50 dark:bg-blue-950/30 transition-shadow group-hover:shadow-lg group-active:shadow-md cursor-pointer">
           <CardContent className="py-4 flex items-center gap-4">
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600">
               <CalendarCheck2 size={24} />
@@ -39,13 +38,13 @@ export default async function ComputerPage(props: ComputerPageProps) {
             <div className="flex-1">
               <div className="text-base font-medium mb-1">Ingin booking komputer?</div>
               <div className="text-sm text-muted-foreground mb-2">Klik di mana saja pada card ini atau tombol di bawah untuk melakukan booking komputer lab.</div>
-              <Button variant="primary" className="w-full sm:w-auto mt-1 pointer-events-none group-hover:ring-2 group-hover:ring-blue-300" tabIndex={-1} aria-hidden>
-                Booking Sekarang
-              </Button>
+              {/* Fallback hardcode text instruction to go the specific url */}
+                <div className="text-xs text-muted-foreground mt-2">
+                    kunjungi: <code className="bg-gray-100 px-1 py-0.5 rounded">{`https://queue.aiot.project-trpl.com/dashboard/book`}</code>
+                </div>
             </div>
           </CardContent>
         </Card>
-      </Link>
 
       {/* Card status pemakaian komputer - lebih menarik dan mudah dibedakan */}
       <Card
