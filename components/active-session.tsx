@@ -153,7 +153,40 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
             </span>
           </div>
         </div>
-
+        {/* Card instruksi penggunaan jika ada active reservation */}
+        {(isActive || true) && (
+          <Card className="border-blue-300 bg-blue-50 dark:bg-blue-950/30">
+            <CardHeader>
+              <CardTitle>Instruksi Penggunaan Komputer Lab</CardTitle>
+              <CardDescription>Petunjuk akses komputer secara langsung maupun remote</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ol className="list-decimal pl-5 text-sm space-y-2">
+                <li>
+                  <span className="font-medium">Akses langsung di lab:</span> Silakan hadir ke laboratorium sesuai waktu reservasi dan gunakan komputer yang telah Anda booking.
+                </li>
+                <li>
+                  <span className="font-medium">Akses remote via AnyDesk:</span>
+                  <ul className="list-disc pl-5 mt-1">
+                    <li>Unduh dan instal aplikasi <span className="font-medium">AnyDesk</span> dari <a href="https://anydesk.com/id/downloads" target="_blank" rel="noopener" className="underline text-blue-600">anydesk.com/id/downloads</a>.</li>
+                    <li>Buka aplikasi AnyDesk di perangkat Anda.</li>
+                    {isActive ? (
+                      <li>Masukkan ID AnyDesk: <span className="bg-gray-100 px-2 py-0.5 rounded font-mono">{reservation.computer?.access_code}</span> pada kolom "Remote Desk".</li>
+                    ) : (
+                      <li>Kode AnyDesk akan diberikan di laman ini pada waktu reservasi Anda dimulai.</li>
+                    )}
+                    <li>Klik tombol <span className="font-medium">Connect</span> untuk memulai koneksi.</li>
+                    <li>Jika diminta password, gunakan password lab seperti biasanya.</li>
+                    <li>Pastikan koneksi internet Anda stabil selama sesi remote.</li>
+                  </ul>
+                </li>
+              </ol>
+              <div className="text-xs text-muted-foreground mt-2">
+                Jika Anda belum mengetahui password akses, silakan menghubungi laboran atau dosen penanggung jawab untuk informasi lebih lanjut.
+              </div>
+            </CardContent>
+          </Card>
+        )}
         <div className="flex gap-2 pt-4">
           {isActive && (
             <Dialog open={showReleaseDialog} onOpenChange={setShowReleaseDialog}>

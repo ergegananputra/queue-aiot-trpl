@@ -27,12 +27,13 @@ export function ComputerGrid({ computers, onRefresh }: ComputerGridProps) {
   const formatDate = (date: Date | string | null) => {
     if (!date) return null;
     const d = new Date(date);
-    return d.toLocaleDateString("id-ID", {
-      weekday: "short",
+    return d.toLocaleString("id-ID", {
+      hour12: false,
+      year: "numeric",
       month: "short",
       day: "numeric",
       hour: "2-digit",
-      minute: "2-digit",
+      minute: "2-digit"
     });
   };
 

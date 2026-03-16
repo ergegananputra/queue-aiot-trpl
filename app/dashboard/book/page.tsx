@@ -116,6 +116,7 @@ function BookPageContent() {
                       <TableHead>From</TableHead>
                       <TableHead>To</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Catatan</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -147,6 +148,7 @@ function BookPageContent() {
                             {reservation.status}
                           </Badge>
                         </TableCell>
+                         <TableCell>{reservation.notes || "-"}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

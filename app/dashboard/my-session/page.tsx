@@ -140,6 +140,7 @@ export default function MySessionPage() {
                   <TableHead>Start</TableHead>
                   <TableHead>End</TableHead>
                   <TableHead>Status</TableHead>
+                   <TableHead>Catatan</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -160,6 +161,7 @@ export default function MySessionPage() {
                         {reservation.status}
                       </Badge>
                     </TableCell>
+                     <TableCell>{reservation.notes || "-"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

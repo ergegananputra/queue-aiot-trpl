@@ -276,6 +276,7 @@ export default function QueuePage() {
                   <TableHead>Start</TableHead>
                   <TableHead>End</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Catatan</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -308,6 +309,7 @@ export default function QueuePage() {
                           {reservation.status}
                         </Badge>
                       </TableCell>
+                      <TableCell>{reservation.notes || "-"}</TableCell>
                     </TableRow>
                   ))}
               </TableBody>

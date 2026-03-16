@@ -27,7 +27,7 @@ export default async function ComputerPage(props: ComputerPageProps) {
   const { currentBooking, historyBookings, upcomingBookings } = await getComputerBookings(id);
 
   return (
-    <main className="max-w-2xl mx-auto py-8 px-4">
+    <main className="max-w-5xl mx-auto py-8 px-4">
 
       {/* Info booking: card kecil dengan icon dan button*/}
       <Card className="border-blue-300 mb-4 bg-blue-50 dark:bg-blue-950/30 transition-shadow group-hover:shadow-lg group-active:shadow-md cursor-pointer">
@@ -69,12 +69,18 @@ export default async function ComputerPage(props: ComputerPageProps) {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Waktu Mulai:</span>
-                <span>{new Date(currentBooking.start_time).toLocaleString("id-ID")}</span>
+                <span>{new Date(currentBooking.start_time).toLocaleString("id-ID", { hour12: false, year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Waktu Selesai:</span>
-                <span>{new Date(currentBooking.end_time).toLocaleString("id-ID")}</span>
+                <span>{new Date(currentBooking.end_time).toLocaleString("id-ID", { hour12: false, year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
               </div>
+              {currentBooking.notes && (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">Catatan:</span>
+                  <span className="text-base text-muted-foreground">{currentBooking.notes}</span>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-2">

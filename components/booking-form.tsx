@@ -192,7 +192,7 @@ export function BookingForm({ computers, selectedComputerId }: BookingFormProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes (optional)</Label>
+            <Label htmlFor="notes">Notes</Label>
             <Input
               id="notes"
               placeholder="Brief description of your work"
