@@ -18,6 +18,7 @@ export interface Computer {
   session_started_at: string | null;
   created_at: string;
   updated_at: string;
+  access_code: string | null;
 }
 
 export interface Reservation {

@@ -68,6 +68,8 @@ export function BookingForm({ computers, selectedComputerId }: BookingFormProps)
         return;
       }
 
+
+      // Proceed with booking if code valid
       const response = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
