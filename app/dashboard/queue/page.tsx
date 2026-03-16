@@ -33,6 +33,7 @@ interface UpcomingReservation {
   status: string;
   computer: { id: string; name: string };
   user: { name: string | null; email: string };
+  notes: string | null;
 }
 
 export default function QueuePage() {

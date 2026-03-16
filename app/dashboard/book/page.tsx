@@ -29,6 +29,7 @@ interface UpcomingReservation {
   status: string;
   computer: { id: string; name: string };
   user: { name: string | null; email: string };
+  notes: string | null;
 }
 
 function BookPageContent() {
@@ -148,7 +149,7 @@ function BookPageContent() {
                             {reservation.status}
                           </Badge>
                         </TableCell>
-                         <TableCell>{reservation.notes || "-"}</TableCell>
+                        <TableCell>{reservation.notes || "-"}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
