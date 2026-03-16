@@ -15,9 +15,13 @@ import {
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDevLoading, setIsDevLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [retryAfter, setRetryAfter] = useState(0);
+  const isDevBypassEnabled =
+    process.env.NEXT_PUBLIC_DEV_BYPASS === "true" &&
+    process.env.NODE_ENV === "development";
 
   const allowedDomainsEnv = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "mail.ugm.ac.id";
   const allowedDomains = allowedDomainsEnv.split(",").map((d) => d.trim().toLowerCase());
@@ -66,6 +70,44 @@ export default function SignInPage() {
     }
   };
 
+  const handleDevLogin = async () => {
+    setError("");
+    setSuccess(false);
+    setRetryAfter(0);
+
+    if (!email.trim()) {
+      setError("Email is required for Dev Login");
+      return;
+    }
+
+    setIsDevLoading(true);
+    try {
+      const response = await fetch("/api/auth/dev-signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Failed to create dev login session");
+        return;
+      }
+
+      if (!data.actionLink) {
+        setError("Dev login link was not generated");
+        return;
+      }
+
+      window.location.href = data.actionLink;
+    } catch {
+      setError("Failed to create dev login session. Please try again.");
+    } finally {
+      setIsDevLoading(false);
+    }
+  };
+
   if (success) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -110,7 +152,7 @@ export default function SignInPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                disabled={isLoading}
+                disabled={isLoading || isDevLoading}
               />
             </div>
 
@@ -125,9 +167,21 @@ export default function SignInPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading || isDevLoading}>
               {isLoading ? "Sending..." : "Send Magic Link"}
             </Button>
+
+            {isDevBypassEnabled && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full"
+                onClick={handleDevLogin}
+                disabled={isLoading || isDevLoading}
+              >
+                {isDevLoading ? "Signing in..." : "Dev Login (Bypass OTP)"}
+              </Button>
+            )}
 
             <p className="text-center text-sm text-muted-foreground">
               We&apos;ll send you a magic link to sign in. No password required.
