@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { useEffect, useState } from "react";
 
 export default function ClockCard() {
@@ -14,10 +14,10 @@ export default function ClockCard() {
         <Card className="border-white-300 bg-white-50 dark:bg-white-950/30 h-full flex items-center justify-center">
             <CardContent className="flex flex-col items-center justify-center py-4">
                 <div className="text-3xl font-bold">
-                    {format(now, "HH:mm:ss")}
+                    {formatJakarta(now, "HH:mm:ss")}
                 </div>
                 <div className="text-xs text-muted-foreground mt-2">
-                    {format(now, "PPP")}
+                    {formatJakarta(now, "PPP")}
                 </div>
             </CardContent>
         </Card>

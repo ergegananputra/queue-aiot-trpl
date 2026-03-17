@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import type { QueuePosition, ComputerStatus } from "@/types";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 
 interface QueueStatusProps {
   position: QueuePosition | null;
@@ -122,7 +122,7 @@ export function QueueStatus({
               {nextFree && (
                 <p className="text-sm text-muted-foreground">
                   Next available: <strong>{nextFree.name}</strong> at{" "}
-                  {format(nextFree.time, "HH:mm")}
+                  {formatJakarta(nextFree.time, "HH:mm")}
                 </p>
               )}
               <Button onClick={handleJoin} disabled={isLoading} className="w-full">
@@ -190,7 +190,7 @@ export function QueueStatus({
               <span className="text-muted-foreground">Next free:</span>
               <span>
                 {nextFree.name} at{" "}
-                {format(nextFree.time, "HH:mm")}
+                {formatJakarta(nextFree.time, "HH:mm")}
               </span>
             </div>
           )}

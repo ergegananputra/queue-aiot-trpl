@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { ActiveSession } from "@/components/active-session";
 import {
   Card,
@@ -76,7 +76,7 @@ export default function MySessionPage() {
   };
 
   const formatDateTime = (date: Date | string) => {
-    return format(new Date(date), "MMM d, yyyy 'at' HH:mm");
+    return formatJakarta(date, "MMM d, yyyy 'at' HH:mm");
   };
 
   if (isLoading) {
@@ -140,7 +140,7 @@ export default function MySessionPage() {
                   <TableHead>Start</TableHead>
                   <TableHead>End</TableHead>
                   <TableHead>Status</TableHead>
-                   <TableHead>Catatan</TableHead>
+                  <TableHead>Catatan</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -161,7 +161,7 @@ export default function MySessionPage() {
                         {reservation.status}
                       </Badge>
                     </TableCell>
-                     <TableCell>{reservation.notes || "-"}</TableCell>
+                    <TableCell>{reservation.notes || "-"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

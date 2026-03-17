@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { format, formatDistanceToNow, intervalToDuration, formatDuration } from "date-fns";
+import { formatDistanceToNow, intervalToDuration, formatDuration } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useState as useCopyState } from "react";
 import type { ReservationWithRelations } from "@/types";
 
 interface ActiveSessionProps {
@@ -128,7 +130,7 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Start:</span>
             <span>
-              {format(startTime, GLOBAL_DATE_FORMAT)}
+              {formatJakarta(startTime, GLOBAL_DATE_FORMAT)}
               {isPending && (
                 <span className="text-muted-foreground ml-1">
                   ({formatDistanceToNow(startTime, { addSuffix: true })})
@@ -139,7 +141,7 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">End:</span>
             <span>
-              {format(endTime, GLOBAL_DATE_FORMAT)}
+              {formatJakarta(endTime, GLOBAL_DATE_FORMAT)}
               {isActive && (
                 <span className="text-muted-foreground ml-1">
                   ({formatDistanceToNow(endTime, { addSuffix: true })})
@@ -154,6 +156,33 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
             </span>
           </div>
         </div>
+        {/* Dedicated card for copying access code (AnyDesk) */}
+        {isActive && reservation.computer && reservation.computer.access_code && (
+          <Card className="border-green-400 bg-green-50 dark:bg-green-950/30 mb-4">
+            <CardContent>
+              <div className="flex items-center justify-center gap-2">
+                <span className="font-medium">AnyDesk Code :</span>
+                <span className="text-lg font-mono bg-gray-100 px-3 py-1 rounded select-all">
+                  {reservation.computer.access_code}
+                </span>
+                <button
+                  type="button"
+                  className="ml-1 p-1 rounded hover:bg-gray-200 transition"
+                  title="Copy code"
+                  onClick={() => {
+                    if (reservation.computer && reservation.computer.access_code) {
+                      navigator.clipboard.writeText(reservation.computer.access_code);
+                      toast.success('Access code copied!');
+                    }
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" strokeWidth="2" /><rect x="3" y="3" width="13" height="13" rx="2" strokeWidth="2" /></svg>
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Card instruksi penggunaan jika ada active reservation */}
         {(isActive || true) && (
           <Card className="border-blue-300 bg-blue-50 dark:bg-blue-950/30">
@@ -172,7 +201,9 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
                     <li>Unduh dan instal aplikasi <span className="font-medium">AnyDesk</span> dari <a href="https://anydesk.com/id/downloads" target="_blank" rel="noopener" className="underline text-blue-600">anydesk.com/id/downloads</a>.</li>
                     <li>Buka aplikasi AnyDesk di perangkat Anda.</li>
                     {isActive ? (
-                      <li>Masukkan ID AnyDesk: <span className="bg-gray-100 px-2 py-0.5 rounded font-mono">{reservation.computer?.access_code}</span> pada kolom "Remote Desk".</li>
+                      <li>
+                        Masukkan ID AnyDesk: <span className="bg-gray-100 px-2 py-0.5 rounded font-mono">{reservation.computer?.access_code}</span> pada kolom "Remote Desk".
+                      </li>
                     ) : (
                       <li>Kode AnyDesk akan diberikan di laman ini pada waktu reservasi Anda dimulai.</li>
                     )}
@@ -201,7 +232,7 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
                   <DialogTitle>Finish Early?</DialogTitle>
                   <DialogDescription>
                     This will release the computer for other users. The remaining
-                    time until {format(endTime, GLOBAL_DATE_FORMAT)} will become available
+                    time until {formatJakarta(endTime, GLOBAL_DATE_FORMAT)} will become available
                     for booking.
                   </DialogDescription>
                 </DialogHeader>

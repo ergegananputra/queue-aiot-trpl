@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -75,14 +75,14 @@ export default function QueuePage() {
 
   useEffect(() => {
     fetchData();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, []);
 
   const formatDateTime = (date: string) => {
-    return format(new Date(date), "MMM d, HH:mm");
+    return formatJakarta(date, "MMM d, HH:mm");
   };
 
   if (isLoading) {

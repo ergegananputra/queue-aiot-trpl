@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 
 interface UpcomingBookingTableProps {
   bookings: any[];
@@ -22,8 +22,8 @@ export default function UpcomingBookingTable({ bookings }: UpcomingBookingTableP
         {bookings.map((b) => (
           <TableRow key={b.id}>
             <TableCell>{b.user?.name || b.user?.email || b.user_id}</TableCell>
-            <TableCell>{format(new Date(b.start_time), GLOBAL_DATE_FORMAT)}</TableCell>
-            <TableCell>{format(new Date(b.end_time), GLOBAL_DATE_FORMAT)}</TableCell>
+            <TableCell>{formatJakarta(b.start_time, GLOBAL_DATE_FORMAT)}</TableCell>
+            <TableCell>{formatJakarta(b.end_time, GLOBAL_DATE_FORMAT)}</TableCell>
             <TableCell>{b.notes || "-"}</TableCell>
           </TableRow>
         ))}

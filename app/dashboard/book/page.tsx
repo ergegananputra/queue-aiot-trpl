@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { BookingForm } from "@/components/booking-form";
 import {
   Card,
@@ -75,7 +75,7 @@ function BookPageContent() {
   }
 
   const formatDateTime = (dateStr: string) => {
-    return format(new Date(dateStr), "MMM d, HH:mm");
+    return formatJakarta(dateStr, "MMM d, HH:mm");
   };
 
   return (

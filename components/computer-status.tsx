@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
 
 interface ComputerStatusProps {
@@ -20,7 +20,7 @@ export default function ComputerStatus({ currentBooking }: ComputerStatusProps) 
             Pengguna: {currentBooking.user?.name || currentBooking.user?.email || currentBooking.user_id}
           </span>
           <span className="ml-2 text-sm text-muted-foreground">
-            Sampai: {format(new Date(currentBooking.end_time), GLOBAL_DATE_FORMAT)}
+            Sampai: {formatJakarta(currentBooking.end_time, GLOBAL_DATE_FORMAT)}
           </span>
         </>
       )}

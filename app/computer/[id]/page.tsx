@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { CalendarCheck2 } from "lucide-react";
 import BookingHistoryTable from "@/components/booking-history-table";
 import UpcomingBookingTable from "@/components/upcoming-booking-table";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
 import ClockCard from "@/components/ClockCard";
 
@@ -75,11 +75,11 @@ export default async function ComputerPage(props: ComputerPageProps) {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Waktu Mulai:</span>
-                <span>{format(new Date(currentBooking.start_time), GLOBAL_DATE_FORMAT)}</span>
+                <span>{formatJakarta(currentBooking.start_time, GLOBAL_DATE_FORMAT)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Waktu Selesai:</span>
-                <span>{format(new Date(currentBooking.end_time), GLOBAL_DATE_FORMAT)}</span>
+                <span>{formatJakarta(currentBooking.end_time, GLOBAL_DATE_FORMAT)}</span>
               </div>
               {currentBooking.notes && (
                 <div className="flex items-center gap-2">

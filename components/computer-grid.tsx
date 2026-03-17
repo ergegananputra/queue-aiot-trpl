@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { ComputerStatus } from "@/types";
 import Link from "next/link";
-import { format } from "date-fns";
+import { formatJakarta } from "@/lib/date-tz-format";
 import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
 
 interface ComputerGridProps {
@@ -29,7 +29,7 @@ export function ComputerGrid({ computers, onRefresh }: ComputerGridProps) {
   const formatDate = (date: Date | string | null) => {
     if (!date) return null;
     const d = new Date(date);
-    return format(d, GLOBAL_DATE_FORMAT);
+    return formatJakarta(d, GLOBAL_DATE_FORMAT);
   };
 
   return (
