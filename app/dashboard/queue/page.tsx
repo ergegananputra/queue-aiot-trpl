@@ -102,7 +102,7 @@ export default function QueuePage() {
     const computerReservations = upcomingReservations
       .filter((r) => r.computer?.id === computer.id)
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
-    
+
     return {
       computer,
       reservations: computerReservations,
@@ -170,8 +170,8 @@ export default function QueuePage() {
                     computer.status === "maintenance"
                       ? "outline"
                       : computer.isOccupied
-                      ? "secondary"
-                      : "default"
+                        ? "secondary"
+                        : "default"
                   }
                   className={
                     !computer.isOccupied && computer.status !== "maintenance"
@@ -182,8 +182,8 @@ export default function QueuePage() {
                   {computer.status === "maintenance"
                     ? "Maintenance"
                     : computer.isOccupied
-                    ? "In Use"
-                    : "Available"}
+                      ? "In Use"
+                      : "Available"}
                 </Badge>
               </div>
               {computer.description && (

@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import type { QueuePosition, ComputerStatus } from "@/types";
+import { format } from "date-fns";
 
 interface QueueStatusProps {
   position: QueuePosition | null;
@@ -61,7 +62,7 @@ export function QueueStatus({
   // Calculate estimated wait time based on when computers will be free
   const getEstimatedWaitTime = () => {
     if (!position) return null;
-    
+
     const occupiedComputers = computers
       .filter((c) => c.isOccupied && c.nextAvailableAt && c.status !== "maintenance")
       .map((c) => new Date(c.nextAvailableAt!).getTime())
@@ -121,10 +122,7 @@ export function QueueStatus({
               {nextFree && (
                 <p className="text-sm text-muted-foreground">
                   Next available: <strong>{nextFree.name}</strong> at{" "}
-                  {nextFree.time.toLocaleTimeString("id-ID", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {format(nextFree.time, "HH:mm")}
                 </p>
               )}
               <Button onClick={handleJoin} disabled={isLoading} className="w-full">
@@ -166,10 +164,10 @@ export function QueueStatus({
               {position.status === "waiting"
                 ? "Waiting"
                 : position.status === "ready"
-                ? "Ready!"
-                : position.status === "called"
-                ? "Called!"
-                : position.status}
+                  ? "Ready!"
+                  : position.status === "called"
+                    ? "Called!"
+                    : position.status}
             </Badge>
           </div>
 
@@ -192,10 +190,7 @@ export function QueueStatus({
               <span className="text-muted-foreground">Next free:</span>
               <span>
                 {nextFree.name} at{" "}
-                {nextFree.time.toLocaleTimeString("id-ID", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                {format(nextFree.time, "HH:mm")}
               </span>
             </div>
           )}

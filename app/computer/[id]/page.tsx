@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { getComputerByIdAndAccessCode, getComputerBookings } from "@/lib/supabase/computer";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { CalendarCheck2 } from "lucide-react";
 import BookingHistoryTable from "@/components/booking-history-table";
 import UpcomingBookingTable from "@/components/upcoming-booking-table";
+import { format } from "date-fns";
+import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
+import ClockCard from "@/components/ClockCard";
 
 interface ComputerPageProps {
   params: { id: string };
@@ -28,23 +29,28 @@ export default async function ComputerPage(props: ComputerPageProps) {
 
   return (
     <main className="max-w-5xl mx-auto py-8 px-4">
-
-      {/* Info booking: card kecil dengan icon dan button*/}
-      <Card className="border-blue-300 mb-4 bg-blue-50 dark:bg-blue-950/30 transition-shadow group-hover:shadow-lg group-active:shadow-md cursor-pointer">
-          <CardContent className="py-4 flex items-center gap-4">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600">
-              <CalendarCheck2 size={24} />
-            </div>
-            <div className="flex-1">
-              <div className="text-base font-medium mb-1">Ingin booking komputer?</div>
-              <div className="text-sm text-muted-foreground mb-2">Klik di mana saja pada card ini atau tombol di bawah untuk melakukan booking komputer lab.</div>
-              {/* Fallback hardcode text instruction to go the specific url */}
+      <div className="grid grid-cols-4 gap-4 mb-4">
+        <div className="col-span-3">
+          <Card className="border-blue-300 bg-blue-50 dark:bg-blue-950/30 transition-shadow group-hover:shadow-lg group-active:shadow-md cursor-pointer h-full">
+            <CardContent className="py-4 flex items-center gap-4">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600">
+                <CalendarCheck2 size={24} />
+              </div>
+              <div className="flex-1">
+                <div className="text-base font-medium mb-1">Ingin booking komputer?</div>
+                <div className="text-sm text-muted-foreground mb-2">Klik di mana saja pada card ini atau tombol di bawah untuk melakukan booking komputer lab.</div>
+                {/* Fallback hardcode text instruction to go the specific url */}
                 <div className="text-xs text-muted-foreground mt-2">
-                    kunjungi: <code className="bg-gray-100 px-1 py-0.5 rounded">{`https://queue.aiot.project-trpl.com/dashboard/book`}</code>
+                  kunjungi: <code className="bg-gray-100 px-1 py-0.5 rounded">{`https://queue.aiot.project-trpl.com/dashboard/book`}</code>
                 </div>
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="col-span-1">
+          <ClockCard />
+        </div>
+      </div>
 
       {/* Card status pemakaian komputer - lebih menarik dan mudah dibedakan */}
       <Card
@@ -69,11 +75,11 @@ export default async function ComputerPage(props: ComputerPageProps) {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Waktu Mulai:</span>
-                <span>{new Date(currentBooking.start_time).toLocaleString("id-ID", { hour12: false, year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                <span>{format(new Date(currentBooking.start_time), GLOBAL_DATE_FORMAT)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Waktu Selesai:</span>
-                <span>{new Date(currentBooking.end_time).toLocaleString("id-ID", { hour12: false, year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                <span>{format(new Date(currentBooking.end_time), GLOBAL_DATE_FORMAT)}</span>
               </div>
               {currentBooking.notes && (
                 <div className="flex items-center gap-2">

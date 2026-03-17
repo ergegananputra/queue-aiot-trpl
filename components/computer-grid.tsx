@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { ComputerStatus } from "@/types";
 import Link from "next/link";
+import { format } from "date-fns";
+import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
 
 interface ComputerGridProps {
   computers: ComputerStatus[];
@@ -27,14 +29,7 @@ export function ComputerGrid({ computers, onRefresh }: ComputerGridProps) {
   const formatDate = (date: Date | string | null) => {
     if (!date) return null;
     const d = new Date(date);
-    return d.toLocaleString("id-ID", {
-      hour12: false,
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+    return format(d, GLOBAL_DATE_FORMAT);
   };
 
   return (

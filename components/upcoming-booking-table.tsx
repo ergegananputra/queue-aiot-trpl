@@ -1,4 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
+import { format } from "date-fns";
 
 interface UpcomingBookingTableProps {
   bookings: any[];
@@ -20,8 +22,8 @@ export default function UpcomingBookingTable({ bookings }: UpcomingBookingTableP
         {bookings.map((b) => (
           <TableRow key={b.id}>
             <TableCell>{b.user?.name || b.user?.email || b.user_id}</TableCell>
-            <TableCell>{new Date(b.start_time).toLocaleString("id-ID", { hour12: false, year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</TableCell>
-            <TableCell>{new Date(b.end_time).toLocaleString("id-ID", { hour12: false, year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</TableCell>
+            <TableCell>{format(new Date(b.start_time), GLOBAL_DATE_FORMAT)}</TableCell>
+            <TableCell>{format(new Date(b.end_time), GLOBAL_DATE_FORMAT)}</TableCell>
             <TableCell>{b.notes || "-"}</TableCell>
           </TableRow>
         ))}

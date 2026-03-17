@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, intervalToDuration, formatDuration } from "date-fns";
+import { GLOBAL_DATE_FORMAT } from "@/lib/date-format";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -127,7 +128,7 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Start:</span>
             <span>
-              {format(startTime, "PPP 'at' p")}
+              {format(startTime, GLOBAL_DATE_FORMAT)}
               {isPending && (
                 <span className="text-muted-foreground ml-1">
                   ({formatDistanceToNow(startTime, { addSuffix: true })})
@@ -138,7 +139,7 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">End:</span>
             <span>
-              {format(endTime, "PPP 'at' p")}
+              {format(endTime, GLOBAL_DATE_FORMAT)}
               {isActive && (
                 <span className="text-muted-foreground ml-1">
                   ({formatDistanceToNow(endTime, { addSuffix: true })})
@@ -149,7 +150,7 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Duration:</span>
             <span>
-              {formatDistanceToNow(startTime, { includeSeconds: false })}
+              {formatDuration(intervalToDuration({ start: startTime, end: endTime }), { format: ["hours", "minutes"] })}
             </span>
           </div>
         </div>
@@ -200,7 +201,7 @@ export function ActiveSession({ reservation }: ActiveSessionProps) {
                   <DialogTitle>Finish Early?</DialogTitle>
                   <DialogDescription>
                     This will release the computer for other users. The remaining
-                    time until {format(endTime, "PPP 'at' p")} will become available
+                    time until {format(endTime, GLOBAL_DATE_FORMAT)} will become available
                     for booking.
                   </DialogDescription>
                 </DialogHeader>
